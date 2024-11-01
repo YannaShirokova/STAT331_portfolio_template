@@ -24,12 +24,24 @@ execute:
 ```{r}
 #| label: wd-1-csv
 
+# Challenge 3
+
+teacher_data <- read_csv(here::here("data", "teacher_evals.csv"))
+
 ```
 
 -   `xlsx`
 
 ```{r}
 #| label: wd-1-xlsx
+
+# PA 4
+
+military <- read_xlsx(here::here("data", 
+                                 "gov_spending_per_capita.xlsx"), 
+                      sheet = "Share of Govt. spending", 
+                      skip  = 7, 
+                      n_max = 191)
 
 ```
 
@@ -38,12 +50,30 @@ execute:
 ```{r}
 #| label: wd-1-txt
 
+# Check in 2.3 
+
+ages_tab <- 
+read_table
+(file = here::here("Week 2", "Check-ins", "Ages_Data", "ages_tab.txt"))
+
 ```
 
 **WD-2: I can select necessary columns from a dataset.**
 
 ```{r}
 #| label: wd-2
+
+# Lab 3, Question 5 
+
+teacher_evals_clean = teacher_data |> 
+  rename(sex=gender) |>
+  filter(no_participants >= 10) |> 
+  select(course_id, teacher_id, question_no, no_participants, 
+         resp_share, SET_score_avg, percent_failed_cur, 
+         academic_degree, seniority, sex) |>
+  mutate(
+    across(.cols = course_id:teacher_id, .fns = ~ as.character(.x)),
+    across(c(academic_degree, sex), as.factor))
 
 ```
 
@@ -54,12 +84,35 @@ execute:
 ```{r}
 #| label: wd-3-numeric
 
+# Lab 3
+
+ca_childcare_clean |>
+  filter(study_year == 2008 | study_year == 2018) |>
+  group_by(region, study_year) |>
+  summarise(median_income = median(mhi_2018, na.rm = TRUE), .groups = 'drop') |>
+  pivot_wider(id_cols = region,
+              names_from = study_year, 
+              values_from = median_income, 
+              names_prefix = "Income ") |>
+  arrange(`Income 2018`)
+
 ```
 
 -   character -- specifically a string (example must use functions from **stringr**)
 
 ```{r}
 #| label: wd-3-string
+
+# Lab 5 
+
+person |>
+  filter(
+    (address_street_name == "Northwestern Dr" & 
+     address_number == max(address_number)) | 
+    (str_detect(name, "Annabel") &
+    address_street_name == "Franklin Ave")) |>
+  left_join(interview, by = c("id" = "person_id")) |>
+  select(transcript)
 
 ```
 
@@ -68,12 +121,32 @@ execute:
 ```{r}
 #| label: wd-3-factor
 
+# Lab 5 
+
+person |>
+  filter(
+    (address_street_name == "Northwestern Dr" & 
+     address_number == max(address_number)) | 
+    (str_detect(name, "Annabel") &
+    address_street_name == "Franklin Ave")) |>
+  left_join(interview, by = c("id" = "person_id")) |>
+  select(transcript)
+
 ```
 
 -   date (example must use functions from **lubridate**)
 
 ```{r}
 #| label: wd-3-date
+
+# Lab 5
+
+crime_scene_report |>
+  mutate(date = ymd(date)) |>
+  filter(city == "SQL City", 
+         type == "murder", 
+         date == ymd(20180115)) |>
+  select(description)
 
 ```
 
@@ -84,12 +157,31 @@ execute:
 ```{r}
 #| label: wd-4-numeric
 
+
+
 ```
 
 -   character -- specifically a string (example must use functions from **stringr**)
 
 ```{r}
 #| label: wd-4-string
+
+# Lab 4, Question 6
+
+ca_childcare_long <- ca_childcare_clean |>
+  select(study_year, region, mc_infant, mc_toddler, mc_preschool) |>
+  # Transform wide to long format
+  pivot_longer(cols = starts_with("mc_"), 
+               # Create a new column "age" from the column names
+               names_to = "age", 
+               # The corresponding values will go in the "price" column
+               values_to = "price") |>
+  mutate(age = fct_relevel(case_when(
+    age == "mc_infant" ~ "Infant",
+    age == "mc_toddler" ~ "Toddler",
+    age == "mc_preschool" ~ "Preschool"
+  ), "Infant", "Toddler", "Preschool"))
+ca_childcare_long
 
 ```
 
@@ -98,12 +190,40 @@ execute:
 ```{r}
 #| label: wd-4-factor
 
+# Lab 4, Question 6
+
+ca_childcare_long <- ca_childcare_clean |>
+  select(study_year, region, mc_infant, mc_toddler, mc_preschool) |>
+  # Transform wide to long format
+  pivot_longer(cols = starts_with("mc_"), 
+               # Create a new column "age" from the column names
+               names_to = "age", 
+               # The corresponding values will go in the "price" column
+               values_to = "price") |>
+  
+  # Here! 
+  mutate(age = fct_relevel(case_when(
+    age == "mc_infant" ~ "Infant",
+    age == "mc_toddler" ~ "Toddler",
+    age == "mc_preschool" ~ "Preschool"
+  ), "Infant", "Toddler", "Preschool"))
+ca_childcare_long
+
 ```
 
 -   date (example must use functions from **lubridate**)
 
 ```{r}
 #| label: wd-4-date
+
+# lab 5
+
+crime_scene_report |>
+  mutate(date = ymd(date)) |>
+  filter(city == "SQL City", 
+         type == "murder", 
+         date == ymd(20180115)) |>
+  select(description)
 
 ```
 
@@ -114,12 +234,24 @@ execute:
 ```{r}
 #| label: wd-5-left
 
+# Lab 5
+
+person |>
+  filter(
+    (address_street_name == "Northwestern Dr" & 
+     address_number == max(address_number)) | 
+    (str_detect(name, "Annabel") &
+    address_street_name == "Franklin Ave")) |>
+  left_join(interview, by = c("id" = "person_id")) |>
+  select(transcript)
+
 ```
 
 -   `right_join()`
 
 ```{r}
 #| label: wd-5-right
+
 
 ```
 
@@ -128,12 +260,17 @@ execute:
 ```{r}
 #| label: wd-5-inner
 
+# lab 5
+
+
+
 ```
 
 -   `full_join()`
 
 ```{r}
 #| label: wd-5-full
+
 
 ```
 
@@ -160,6 +297,22 @@ execute:
 ```{r}
 #| label: wd-7-long
 
+# Lab 4, Question 6
+
+ca_childcare_long <- ca_childcare_clean |>
+  select(study_year, region, mc_infant, mc_toddler, mc_preschool) |>
+  # Transform wide to long format
+  pivot_longer(cols = starts_with("mc_"), 
+               # Create a new column "age" from the column names
+               names_to = "age", 
+               # The corresponding values will go in the "price" column
+               values_to = "price") |>
+  mutate(age = fct_relevel(case_when(
+    age == "mc_infant" ~ "Infant",
+    age == "mc_toddler" ~ "Toddler",
+    age == "mc_preschool" ~ "Preschool"
+  ), "Infant", "Toddler", "Preschool"))
+
 ```
 
 -   `pivot_wider()`
@@ -167,13 +320,25 @@ execute:
 ```{r}
 #| label: wd-7-wide
 
+# Lab 4, Question 4
+
+ca_childcare_clean |>
+  filter(study_year == 2008 | study_year == 2018) |>
+  group_by(region, study_year) |>
+  summarise(median_income = median(mhi_2018, na.rm = TRUE), .groups = 'drop') |>
+  pivot_wider(id_cols = region,
+              names_from = study_year, 
+              values_from = median_income, 
+              names_prefix = "Income ") |>
+  arrange(`Income 2018`)
+
 ```
 
 ## Reproducibility
 
 **R-1: I can create professional looking, reproducible analyses using RStudio projects, Quarto documents, and the here package.**
 
-I've done this in the following provided assignments:
+I've done this in the following provided assignments: 
 
 **R-2: I can write well documented and tidy code.**
 
@@ -182,6 +347,37 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: r-2-1
 
+# Lab 4, Question 6
+
+ggplot(data = ca_childcare_long, aes(x = study_year, y = price, 
+  color = fct_reorder2(.f = region, .x = study_year, .y = price))) +
+  geom_smooth(method = "loess", linewidth = 0.5) +  
+  geom_point(size = 0.8, alpha = 0.5) + 
+  # creates seperate graphs for age_groups
+  # each has its own x-axis
+  # in one row 
+  facet_wrap(~ age, scales = "free_x", nrow=1) +  
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       x = "Study Year",
+       y = "",
+       color = "California Region") +
+  # adjust axis
+  scale_y_continuous(limits = c(100, 500), breaks = seq(100, 500, by = 100)) +
+  scale_x_continuous(breaks = seq(2008, 2018, by = 2)) +
+  theme_bw() +
+  theme(
+    # spaces the graphs apart, lines is a unit
+    panel.spacing = unit(1, "lines"), 
+    # change the aspect ratio to make it less tall
+    aspect.ratio = 1, # make it less tall
+    axis.text.x = element_text(size = 7), 
+    axis.text.y = element_text(size = 7), 
+    legend.title = element_text(size = 10), 
+    legend.text = element_text(size = 8), 
+    legend.key.size = unit(0.8, "lines")
+  ) +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10))
+
 ```
 
 -   Example of **dplyr** pipeline
@@ -189,12 +385,18 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: r-2-2
 
+
+
+
+
 ```
 
 -   Example of function formatting
 
 ```{r}
 #| label: r-2-3
+
+
 
 ```
 
