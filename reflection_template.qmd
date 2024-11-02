@@ -415,7 +415,7 @@ ca_childcare_clean |>
 
 **R-1: I can create professional looking, reproducible analyses using RStudio projects, Quarto documents, and the here package.**
 
-I've done this in the following provided assignments: 
+I've done this in the following provided assignments: Lab 4, Lab 5
 
 **R-2: I can write well documented and tidy code.**
 
@@ -506,12 +506,26 @@ ca_childcare_long <- ca_childcare_clean |>
 ```{r}
 #| label: r-3-example
 
+# Lab 4, Question 4
+
+ca_childcare_clean |>
+  filter(study_year == 2008 | study_year == 2018) |>
+  group_by(region, study_year) |>
+  summarise(median_income = median(mhi_2018, na.rm = TRUE), .groups = 'drop') |>
+  pivot_wider(id_cols = region,
+              names_from = study_year, 
+              values_from = median_income, 
+              names_prefix = "Income ") |>
+  arrange(`Income 2018`)
+
 ```
 
 -   Example of function stops
 
 ```{r}
 #| label: r-3-function-stops
+
+
 
 ```
 
@@ -867,7 +881,7 @@ teacher_evals_clean |>
   summarize(
     across(.cols = c(no_participants, resp_share, SET_score_avg),
       .fns = mean, 
-     .names = "{.col}_avg"))
+      .names = "{.col}_avg"))
 
 ```
 
