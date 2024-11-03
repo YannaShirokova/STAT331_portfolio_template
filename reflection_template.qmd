@@ -65,6 +65,10 @@ read_table
 
 # Lab 3, Question 5 
 
+# Success comment: I'd encourage you to be more consistent with your function 
+# syntax. The first syntax for the across() function is spot on, but the second 
+# one lacks the details you included in the first.
+
 teacher_evals_clean = teacher_data |> 
   rename(sex=gender) |>
   filter(no_participants >= 10) |> 
@@ -73,8 +77,7 @@ teacher_evals_clean = teacher_data |>
          academic_degree, seniority, sex) |>
   mutate(
     across(.cols = course_id:teacher_id, .fns = ~ as.character(.x)),
-    across(c(academic_degree, sex), as.factor))
-
+    across(.cols = c(academic_degree, sex), .fns = ~ as.factor(.x)))
 ```
 
 **WD-3: I can filter rows from a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
