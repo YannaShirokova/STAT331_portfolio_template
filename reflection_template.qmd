@@ -175,13 +175,11 @@ crime_scene_report |>
 # Challenge 3, Question 1
 
 # I use to compare the question_no to just 903, 
-# but here I made modifications so I just refer to the numbers without
-# the leading 90. I also made sure to convert question_no back to a double
-# as I converted it to a string to remove the 90.
+# but here I just subtracted 900 so I can just compare question_no to 3
 
 teacher_evals_compare = teacher_data |> 
   mutate(
-    question_no = as.numeric(str_remove(as.character(question_no), "^90")),
+    question_no = question_no - 900,
     SET_level = if_else(SET_score_avg >= 4, "excellent", "standard"),
     sen_level = if_else(seniority <= 4, "junior", "senior")) |> 
   filter(question_no == 3) |>
@@ -411,30 +409,36 @@ person |>
 ```{r}
 #| label: wd-7-long
 
-# Lab 4, Question 6
+# Lab 9. Question 3
 
-# Growing comment: Nice work pivoting and modifying the age variable! 
-# The recode() function is superseeded, in favor of case_when() and functions 
-# in the forcats package.
+# Success comment: Fun fact! The select() column can be used to rename and 
+# change the order of columns, all in **one** function!
+# Fixed!
 
-# What I did: Before I changed the names of mc_infant, mc_toddler, mc_preschool 
-# to Infant, Toddler, Preschool using recode(), which is
-# superseeded! I changed it to case_when() from the forcats package. This way
-# I am using the updated appropriate function.
-
-ca_childcare_long <- ca_childcare_clean |>
-  select(study_year, region, mc_infant, mc_toddler, mc_preschool) |>
-  # Transform wide to long format
-  pivot_longer(cols = starts_with("mc_"), 
-               # Create a new column "age" from the column names
-               names_to = "age", 
-               # The corresponding values will go in the "price" column
-               values_to = "price") |>
-  mutate(age = fct_relevel(case_when(
-    age == "mc_infant" ~ "Infant",
-    age == "mc_toddler" ~ "Toddler",
-    age == "mc_preschool" ~ "Preschool"), 
-    "Infant", "Toddler", "Preschool"))
+evals |>
+  select(teacher_id, academic_degree, seniority, sex) |>
+  distinct(teacher_id, .keep_all = TRUE) |>
+  mutate(
+    status = case_when(
+      seniority <= 4 ~ "junior",
+      seniority > 4 ~ "senior")) |>
+  pivot_longer(
+    cols = c(sex, academic_degree, status),
+    names_to = "demographic",
+    values_to = "category") |>
+  count(category) |>
+  pivot_wider(names_from = category, values_from = n) |>
+  select(
+    "Female" = female,
+    "Male" = male,
+    "Junior (4 years or less)" = junior,
+    "Senior (more than 4 years)" = senior,
+    "No Degree" = no_dgr,
+    "Masters" = ma,
+    "Doctorate" = dr,
+    "Professor" = prof) |>
+  kable() |>
+  kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -487,12 +491,16 @@ I've done this in the following provided assignments: Lab 4, Lab 5
 # theme_bw() and modified the colors. Rather than using the defaults, 
 # it is important to explore different colors and themes that can make a 
 # graph more appealing!
+# Fix after midterm: got rid of nesting
 
 
 #| label: recreate-plot
 #| echo: true
 #| warning: false
 #| message: false
+
+base_palette <- brewer.pal(8, "Accent")
+color_palette <- colorRampPalette(base_palette)(10)
 
 ggplot(data = ca_childcare_long, aes(x = study_year, y = price, 
   color = fct_reorder2(.f = region, .x = study_year, .y = price))) +
@@ -521,7 +529,7 @@ ggplot(data = ca_childcare_long, aes(x = study_year, y = price,
     legend.text = element_text(size = 8), 
     legend.key.size = unit(0.8, "lines")
   ) +
-  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10))
+  scale_color_manual(values = color_palette)
 
 ```
 
@@ -540,6 +548,7 @@ ggplot(data = ca_childcare_long, aes(x = study_year, y = price,
 # to Infant, Toddler, Preschool using recode(), which is
 # superseeded! I changed it to case_when() from the forcats package. This way
 # I am using the updated appropriate function.
+# After midterm: got rid of function nesting
 
 #| label: recreate-plot
 #| echo: true
@@ -549,16 +558,15 @@ ggplot(data = ca_childcare_long, aes(x = study_year, y = price,
 ca_childcare_long <- ca_childcare_clean |>
   select(study_year, region, mc_infant, mc_toddler, mc_preschool) |>
   # Transform wide to long format
-  pivot_longer(cols = starts_with("mc_"), 
-               # Create a new column "age" from the column names
-               names_to = "age", 
-               # The corresponding values will go in the "price" column
-               values_to = "price") |>
-  mutate(age = fct_relevel(case_when(
-    age == "mc_infant" ~ "Infant",
-    age == "mc_toddler" ~ "Toddler",
-    age == "mc_preschool" ~ "Preschool"
-  ), "Infant", "Toddler", "Preschool"))
+  pivot_longer(
+    cols = starts_with("mc_"), 
+    names_to = "age", 
+    values_to = "price") |>
+  mutate(age = case_when(
+      age == "mc_infant" ~ "Infant",
+      age == "mc_toddler" ~ "Toddler",
+      age == "mc_preschool" ~ "Preschool"),
+      age = fct_relevel(age, "Infant", "Toddler", "Preschool"))
 
 ```
 
@@ -567,7 +575,31 @@ ca_childcare_long <- ca_childcare_clean |>
 ```{r}
 #| label: r-2-3
 
+# Challenge 7, Question 2
 
+# Growing: It looks like you are checking multiple conditions in your [ ]. 
+# Perhaps case_when() is a better tool for the job?
+# Where are your function checks? What types of inputs does your function expect?
+
+# Reflection: I changed my function so it's using case_when since I was 
+# checking multiple conditions. This makes it easier to read and the code 
+# more clear. I also added the stopifnot() to check that my input types are
+# of the type I expect them to be. This is really important because if I get 
+# passed the wrong types, my function would not work as expected/ error.  
+
+clean_measurements <- function(vec, min_value, max_value) {
+  stopifnot(is.numeric(vec), 
+            is.numeric(min_value), 
+            is.numeric(max_value), 
+            min_value <= max_value)
+  
+  vec <- case_when(
+    vec < min_value ~ NA,
+    vec > max_value ~ NA,
+    TRUE ~ vec
+  )
+  return(vec)
+}
 
 ```
 
@@ -601,7 +633,23 @@ ca_childcare_clean |>
 ```{r}
 #| label: r-3-function-stops
 
+# Lab 9, Question 1
 
+# Success comment: I love your function checks! I'm a bit confused about this 
+# one --nBabies == floor(nBabies)? What is the purpose of this check?
+# I was making sure that the value was a positive whole number!
+
+#| label: function-simulation-for-random-babies
+#| message: false
+#| warning: false
+#| echo: true
+
+randomBabies <- function(nBabies = 4){
+  stopifnot(is.numeric(nBabies), nBabies > 0, nBabies == floor(nBabies))
+  
+  assigned <- sample(1:nBabies, size = nBabies, replace = FALSE)
+  sum(assigned == 1:nBabies)
+}
 
 ```
 
@@ -966,6 +1014,30 @@ ggplot(data = surveys,
     annotate("text", x = 13, y = 250, label = "Dipodomys") +
     annotate("text", x = 14, y = 250, label = "Onychomys")
 
+# FIXED from first midterm check in
+# Made it more efficient using map2!
+
+# https://chatgpt.com/share/674eb08f-bd5c-8006-8b97-c61b5ae788cd
+
+labels <- c("Neotoma", "Chaetodipus", "Peromyscus", "Perognathus", 
+            "Reithrodontomys", "Sigmodon", "Onychomys", "Peromyscus", 
+            "Reithrodontomys", "Dipodomys", "Dipodomys", "Chaetodipus", 
+            "Dipodomys", "Onychomys")
+
+x_positions <- 1:14  
+
+ggplot(data = surveys, 
+       mapping = aes(x = species, y = weight, color = genus)) + 
+  geom_boxplot() +
+  labs(
+    x = "",
+    subtitle = "Species",
+    y = "Weight (grams)",
+    title = "Analyzing Weight Distributions Across Various Rodents") +
+  coord_flip() +
+  theme(legend.position = "none") + 
+  scale_color_manual(values = cdPalette_grey) + 
+  map2(x_positions, labels, ~ annotate("text", x = .x, y = 250, label = .y)) 
 
 ```
 
@@ -974,21 +1046,28 @@ ggplot(data = surveys,
 ```{r}
 #| label: dvs-3-3
 
-# Challenge 2, Spicy
+# Lab 9, Question 3
 
-ggplot(data = surveys, 
-    mapping = aes(x = species, y = weight, fill = genus)) +
-    # swapped the geoms to see the colors better!
-    geom_jitter(color = "steelblue", alpha = 0.2, width = 0.1, height = 0) +
-    geom_boxplot(outliers = FALSE) +
-    labs(
-      x = "", 
-      y = "Weight (grams)",
-      subtitle = "Species", 
-      title = "Analyzing Weight Distributions Across Rodents"
-    ) +
-    scale_fill_brewer(palette = "Set3") +
-    coord_flip()
+# Success comment: I love the colors, but technically your legend has the same 
+# information as your y-axis, so I would recommend removing it. We don't want to 
+# have redundant information in our plots!
+# Fun plot title! Wouldn’t it be nice to transform the proportions 
+# into percentages with the label_percent() function from the scales package? 
+# Then you might not need your subtitle!
+
+# Fixed all!
+
+results_enframe |>
+  ggplot(aes(x = as.factor(ncorrect), fill = as.factor(ncorrect))) +
+  geom_bar(mapping = aes(y = after_stat(count) / sum(after_stat(count)))) +  
+  labs(x = "Correctly Matched Babies", 
+       y = "",
+       title = "Four Babies Born: How Many are Returned to the Correct Parents?") +
+  theme_minimal() +
+  scale_fill_manual(values = c("skyblue", "lightgreen", "lightcoral", "plum", "lightgoldenrodyellow")) +
+  scale_x_discrete(limits = c("0", "1", "2", "3", "4")) +
+  scale_y_continuous(labels = label_percent()) +
+  theme(legend.position = "none")
 
 ```
 
@@ -1016,7 +1095,6 @@ teacher_evals_clean |>
   filter(question_no == 901) |>
   summarize(avg = mean(SET_score_avg, na.rm = TRUE)) |>
   filter(avg == min(avg) | avg == max(avg))
-
 
 ```
 
@@ -1138,6 +1216,7 @@ teacher_evals_clean |>
   filter(avg == min(avg) | avg == max(avg)) |>
   rename(`Female Teacher` = teacher_id, 
          `Average Response Rate (Min/ Max)` = avg)
+
 ```
 
 **DVS-7: I show creativity in my tables.**
@@ -1147,12 +1226,67 @@ teacher_evals_clean |>
 ```{r}
 #| label: dvs-7-1
 
+# Lab 9, Question 2
+
+# Success comment: I love the color in this table! 
+# I also really like the column names! Nice work adding percentages to this table!
+# Can you include a footnote indicating how many simulations were run to get these proportions?
+
+# Added a footer!
+
+results_enframe |>
+  count(ncorrect) |>
+  mutate(proportion = n / sum(n)) |>
+  complete(ncorrect = 0:4, fill = list(n = 0, proportion = 0)) |>
+  select(ncorrect, proportion) |>
+  pivot_wider(names_from = ncorrect, values_from = proportion, names_prefix = "Babies: ") |>
+  gt() |>
+  tab_header(title = "Proportion of Simulations by Number of Correctly Returned Babies to their Parents") |>
+  fmt_percent(
+    columns = starts_with("Babies: "),  
+    decimals = 1) |> 
+  tab_style(
+    style = list(
+      cell_borders(sides = "all", color = "black", weight = px(2)),
+      cell_fill(color = "skyblue")),
+    locations = cells_body(columns = everything())) |>
+  tab_footnote("Total simulations run: 10,000")
+
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dvs-7-2
+
+# Lab 9, Question 3
+
+# Success Comment: Fun fact! The select() column can be used to rename and 
+# change the order of columns, all in **one** function!
+# Fixed!
+
+# Success Comment: Is is possible to change the column names with 
+# the kable() function? Fixed!
+
+evals |>
+  select(teacher_id, academic_degree, seniority, sex) |>
+  distinct(teacher_id, .keep_all = TRUE) |>
+  mutate(
+    status = case_when(
+      seniority <= 4 ~ "junior",
+      seniority > 4 ~ "senior")) |>
+  pivot_longer(
+    cols = c(sex, academic_degree, status),
+    names_to = "demographic",
+    values_to = "category") |>
+  count(category) |>
+  pivot_wider(names_from = category, values_from = n) |>
+  select(female, male, junior, senior, no_dgr, ma, dr,prof) |>
+  kable(col.names = c("Female", "Male", "Junior (4 years or less)", 
+                      "Senior (more than 4 years)", 
+                      "No Degree", "Masters", 
+                      "Doctorate", "Professor")) |>
+  kable_styling(bootstrap_options = "striped")
 
 ```
 
@@ -1223,6 +1357,17 @@ teacher_evals_clean = teacher_data |>
 ```{r}
 #| label: pe-1-map-1
 
+# Lab 8, Question 4
+
+# Success Comment: Could you make this table prettier? :)
+# Fixed!
+
+fish |> 
+  map_int(~ sum(is.na(.))) |> 
+  enframe(name = "Variable", value = "Count") |>
+  kable(caption = "Number of NAs in each Variable") |>
+  kable_styling(bootstrap_options = "striped")
+
 ```
 
 **PE-2: I can write functions to reduce repetition in my code.**
@@ -1232,12 +1377,55 @@ teacher_evals_clean = teacher_data |>
 ```{r}
 #| label: pe-2-1
 
+# Challenge 7, Question 2
+
+# Growing: It looks like you are checking multiple conditions in your [ ]. 
+# Perhaps case_when() is a better tool for the job?
+# Where are your function checks? What types of inputs does your function expect?
+
+# Reflection: I changed my function so it's using case_when since I was 
+# checking multiple conditions. This makes it easier to read and the code 
+# more clear. I also added the stopifnot() to check that my input types are
+# of the type I expect them to be. This is really important because if I get 
+# passed the wrong types, my function would not work as expected/ error.  
+
+clean_measurements <- function(vec, min_value, max_value) {
+  stopifnot(is.numeric(vec), 
+            is.numeric(min_value), 
+            is.numeric(max_value), 
+            min_value <= max_value)
+  
+  vec <- case_when(
+    vec < min_value ~ NA,
+    vec > max_value ~ NA,
+    TRUE ~ vec
+  )
+  return(vec)
+}
+
 ```
 
 -   Function that operates on data frames
 
 ```{r}
 #| label: pe-2-2
+
+# Lab 7, Question 8
+
+# Success comment: Nice work incorporating across() into your function body! 
+# Nice work using the most modern syntax for across() !!!
+# What sort of input check would you want for your rescale_column() function? 
+# How would you validate that the input was a data frame? How could you confirm 
+# that the columns being input are included in that data frame?
+
+# Fixed!
+
+rescale_columns <- function(df, vars) {
+  stopifnot(is.data.frame(df), 
+            all(vars %in% names(df)))
+  
+  mutate(df, across(.cols = vars, .fns = ~rescale_01(.), .names = "rescaled_{.col}"))
+}
 
 ```
 
@@ -1248,6 +1436,12 @@ teacher_evals_clean = teacher_data |>
 ```{r}
 #| label: pe-3-across
 
+# Lab 7, Question 1
+
+fish |>
+  summarize(
+    across(.cols = everything(), .fns = ~ sum(is.na(.)), .names = "{.col}_missing"))
+
 ```
 
 -   `map()` function with **one** input (e.g., `map()`, `map_chr()`, `map_dbl()`, etc.)
@@ -1255,12 +1449,32 @@ teacher_evals_clean = teacher_data |>
 ```{r}
 #| label: pe-3-map-1
 
+# Lab 8, Question 4
+
+# Success Comment: Could you make this table prettier? :)
+# Fixed!
+
+fish |> 
+  map_int(~ sum(is.na(.))) |> 
+  enframe(name = "Variable", value = "Count") |>
+  kable(caption = "Number of NAs in each Variable") |>
+  kable_styling(bootstrap_options = "striped")
+
 ```
 
 -   `map()` function with **more than one** input (e.g., `map_2()` or `pmap()`)
 
 ```{r}
 #| label: pe-3-map-2
+
+# Lab 9, Question 6
+# Didn't originally do
+# Did for final!
+
+all_simulations <- grid |> 
+  mutate(simulated_means = pmap(.l = list(n, df), 
+                                .f = simulate_means)) |> 
+  unnest(simulated_means) 
 
 ```
 
@@ -1414,15 +1628,7 @@ chisq.test(teacher_evals_compare$SET_level,
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
-Throughout the course, I have revised all my growing areas and have been working
-hard to look at the success comments as well to incorporate into newer assignments.
-I wrote code comments in every chunk were I revised code to state what I changed
-and reflect on how the new code is better ensuring to focus on the "bigger 
-picture." This was sometimes challenging as most of my growing areas were small 
-fixes, but I still made sure to reflect. Overall, fixing all my growing areas 
-and reflecting on them was very valuable because it helped me remember to
-incorporate those changes into the following labs. In my portfolio, I revised
-code chunks to reflect the changes growing and success comments suggested. 
+Throughout the course, I have revised all my growing areas and have been working hard to look at the success comments as well to incorporate into newer assignments. I wrote code comments in every chunk were I revised code to state what I changed and reflect on how the new code is better ensuring to focus on the "bigger picture." This was sometimes challenging as most of my growing areas were small fixes, but I still made sure to reflect. Overall, fixing all my growing areas and reflecting on them was very valuable because it helped me remember to incorporate those changes into the following labs. In my portfolio, I revised code chunks to reflect the changes growing and success comments suggested.
 
 <!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
 
@@ -1430,54 +1636,22 @@ code chunks to reflect the changes growing and success comments suggested.
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
-To extend my thinking, I try to think of what code functions might be
-most helpful and efficient for each particular situation. Essentially, gathering 
-what I learned from class and critically thinking as I apply it to my assignments.
-Also, if I was curious or wanted to learn more, I would Google to discover
-new information (e.g. finding new color palettes and themes). In the code 
-examples in my portfolio, I made sure to consider all the growing and success 
-comments on my assignments, improving my code to be tidy and efficient. I 
-also make a really big effort to do my best on every lab and challenge to 
-produce quality documents.
+To extend my thinking, I try to think of what code functions might be most helpful and efficient for each particular situation. Essentially, gathering what I learned from class and critically thinking as I apply it to my assignments. Also, if I was curious or wanted to learn more, I would Google to discover new information (e.g. finding new color palettes and themes). In the code examples in my portfolio, I made sure to consider all the growing and success comments on my assignments, improving my code to be tidy and efficient. I also make a really big effort to do my best on every lab and challenge to produce quality documents.
 
 ## Peer Support & Collaboration
 
 <!-- Include an image or a description of feedback you gave that you are proud of (either in a peer review or in Discord). -->
 
-Here is my peer review from lab 3. I particularly like this one, even though I 
-have done a peer review every week. For this review, I talked about specific 
-questions and gave advice on how the code can be made better. I made sure
-to comment what was good about the code too!
+Here is my peer review from lab 3. I particularly like this one, even though I have done a peer review every week. For this review, I talked about specific questions and gave advice on how the code can be made better. I made sure to comment what was good about the code too!
 
-"Hey! Good job on adding a table of contents and code folding options. 
-This makes your overall lab have a cleaner look and easier to follow. 
+"Hey! Good job on adding a table of contents and code folding options. This makes your overall lab have a cleaner look and easier to follow.
 
-In question 7, you add some extra spacing and indenting that is unnecessary and 
-makes the code look a little messy. Also, you can be more specific when using 
-if_any(). For example, try adding named arguments and correct function syntax. 
-if_any(.cols = everything(), .fns = ~ is.na(.x)). 
+In question 7, you add some extra spacing and indenting that is unnecessary and makes the code look a little messy. Also, you can be more specific when using if_any(). For example, try adding named arguments and correct function syntax. if_any(.cols = everything(), .fns = \~ is.na(.x)).
 
-For questions 10-12, you have some extra spacing and indentation that made 
-it hard to read/ follow the code. Also, you repeat the main chunk of the code 
-twice, I think you could have combined these to get the min/ max from one code 
-chunk to be more efficient. I also couldn't see the output of your code in most 
-of these.
+For questions 10-12, you have some extra spacing and indentation that made it hard to read/ follow the code. Also, you repeat the main chunk of the code twice, I think you could have combined these to get the min/ max from one code chunk to be more efficient. I also couldn't see the output of your code in most of these.
 
-Overall, your results seem great! Make sure to not repeat big chunks of code, 
-always display the output, and remove extra spacing/ indents.
+Overall, your results seem great! Make sure to not repeat big chunks of code, always display the output, and remove extra spacing/ indents.
 
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
 
-During pair programming I made sure to follow the programmer vs coder routines. 
-When it was my partners turn to type, I would tell them what to write. When it 
-would be my turn to type, I listened to my partner and made sure to not just 
-type what I wanted to. If we were stuck and neither of us knew what to do, we 
-would collaborate and try to problem solve together. I also raised my hand when
-needed to help my partner and I when we couldn't figure out what to do. 
-
-
-
-
-
-
-
+During pair programming I made sure to follow the programmer vs coder routines. When it was my partners turn to type, I would tell them what to write. When it would be my turn to type, I listened to my partner and made sure to not just type what I wanted to. If we were stuck and neither of us knew what to do, we would collaborate and try to problem solve together. I also raised my hand when needed to help my partner and I when we couldn't figure out what to do.
