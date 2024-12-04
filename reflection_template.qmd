@@ -163,6 +163,31 @@ crime_scene_report |>
          date == ymd(20180115)) |>
   select(description)
 
+# After Midterm
+# Chose an example where I extract the month and year using lubridate!
+# I changed my code so I use month(), year(), and ymd() instead of 
+# filter(str_starts(as.character(date), "2017")
+
+drivers_license |>
+  rename(license_id = id) |>
+  filter(
+    gender == "female",             
+    hair_color == "red",            
+    height >= 65 & height <= 67,                  
+    car_make == "Tesla",           
+    car_model == "Model S") |>
+  left_join(person, by = "license_id") |>
+  inner_join(facebook_event_checkin, by = c("id" = "person_id")) |>
+  mutate(date = ymd(date)) |>
+  filter(year(date) == 2017, month(date) == 12,
+         event_name == "SQL Symphony Concert") |>
+  group_by(id) |>
+  summarise(event_count = n(), .groups = "drop") |>
+  filter(event_count == 3) |>
+  inner_join(person, by = "id") |>
+  left_join(interview, by = c("id" = "person_id")) |>
+  select(name, transcript)
+
 ```
 
 **WD-4: I can modify existing variables and create new variables in a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -192,27 +217,25 @@ teacher_evals_compare = teacher_data |>
 ```{r}
 #| label: wd-4-string
 
-# Lab 4, Question 3
+# lab 5
+# Changed from midterm... last time I used the example we were provided 
+# from chatgpt
+# This is now my own example! 
 
-ca_childcare_clean <- ca_childcare |> # keep
-  mutate(county_name = str_remove(county_name, " County")) |> 
-  mutate(region = 
-    fct_collapse(county_name,
-      "Superior California" = c("Butte", "Colusa", "El Dorado", "Glenn", "Lassen", "Modoc", 
-      "Nevada", "Placer", "Plumas", "Sacramento", "Shasta", "Sierra", "Siskiyou", "Sutter", 
-      "Tehama", "Yolo", "Yuba"), 
-      "North Coast" = c("Del Norte", "Humboldt", "Lake", "Mendocino", "Napa", "Sonoma", "Trinity"), 
-      "San Francisco Bay Area" = c("Alameda", "Contra Costa", 
-      "Marin", "San Francisco", "San Mateo", "Santa Clara", "Solano"), 
-      "Northeren San Joaquin Valley" = c("Alpine", "Amador", "Calaveras", 
-      "Madera", "Mariposa", "Merced", "Mono", "San Joaquin", "Stanislaus", "Tuolumne"), 
-      "Central Coast" = c("Monterey", "San Benito", "San Luis Obispo", "Santa Barbara", 
-      "Santa Cruz", "Ventura"), 
-      "Southern San Joaquin Valley" = c("Fresno", "Inyo", "Kern", "Kings", "Tulare"), 
-      "Inland Empire" = c("Riverside", "San Bernardino"), 
-      "Los Angeles County" = c("Los Angeles"), 
-      "Orange County" = c("Orange"),
-      "San-Diego Imperial" = c("Imperial", "San Diego")))
+# Clues: 
+# The membership number on the bag started with "48Z"
+# I was working out last week on January the 9th
+membership_ids <- get_fit_now_check_in |>
+  filter(str_detect(membership_id, "^48Z"),
+         ymd(check_in_date) == ymd("2018-01-09")) |>
+  select(membership_id)
+
+# Clue: The man got into a car with a plate that included "H42W"
+driver_ids <- drivers_license |>
+  filter(gender == "male", 
+         str_detect(plate_number, "H42W")) |>
+  select(id) |>
+  rename(license_id = id) 
 
 ```
 
@@ -253,7 +276,7 @@ ca_childcare_long <- ca_childcare_clean |>
 ```{r}
 #| label: wd-4-date
 
-# lab 5
+# Lab 5
 
 # Success Comment: Technically, the date variable was read in as an integer. 
 # Could you convert it into a date-time variable? This would give you the 
@@ -269,6 +292,31 @@ crime_scene_report |>
          type == "murder", 
          date == ymd(20180115)) |>
   select(description)
+
+# After Midterm
+# Chose an example where I extract the month and year using lubridate!
+# I changed my code so I use month(), year(), and ymd() instead of 
+# filter(str_starts(as.character(date), "2017")
+
+drivers_license |>
+  rename(license_id = id) |>
+  filter(
+    gender == "female",             
+    hair_color == "red",            
+    height >= 65 & height <= 67,                  
+    car_make == "Tesla",           
+    car_model == "Model S") |>
+  left_join(person, by = "license_id") |>
+  inner_join(facebook_event_checkin, by = c("id" = "person_id")) |>
+  mutate(date = ymd(date)) |>
+  filter(year(date) == 2017, month(date) == 12,
+         event_name == "SQL Symphony Concert") |>
+  group_by(id) |>
+  summarise(event_count = n(), .groups = "drop") |>
+  filter(event_count == 3) |>
+  inner_join(person, by = "id") |>
+  left_join(interview, by = c("id" = "person_id")) |>
+  select(name, transcript)
 
 ```
 
@@ -350,22 +398,6 @@ drivers_license |>
 
 ```
 
--   `full_join()`
-
-```{r}
-#| label: wd-5-full
-
-# Includes everything from both tables (na) if no match
-
-person |>
-  filter(
-    (address_street_name == "Northwestern Dr" & 
-     address_number == max(address_number)) | 
-    (str_detect(name, "Annabel") &
-    address_street_name == "Franklin Ave")) |>
-    full_join(interview, by = c("id" = "person_id")) 
-
-```
 
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
 
@@ -610,21 +642,60 @@ clean_measurements <- function(vec, min_value, max_value) {
 ```{r}
 #| label: r-3-example
 
-# Lab 4, Question 4
+# Challenge 2, Hot
+# Originally I didn't do this challenge, I added it now for the portfolio!
 
-# Success comments: I would recommend using the %in% operator instead of the or!
-# Nice work learning to drop the groups!
-# Nice column names! You could even be more specific and say "Median Income"!
+ggplot(data = surveys, 
+       mapping = aes(x = species, y = weight, color = genus)) + 
+    #geom_jitter(alpha = 0.2) +
+    geom_boxplot() +
+    labs(
+      x = "",
+      subtitle = "Species",
+      y = "Weight (grams)",
+      title = "Analyzing Weight Distributions Across Various Rodents") +
+    coord_flip() +
+    theme(legend.position = "none") + 
+    scale_color_manual(values = cdPalette_grey) + 
+    annotate("text", x = 1, y = 250, label = "Neotoma") + 
+    annotate("text", x = 2, y = 250, label = "Chaetodipus") +
+    annotate("text", x = 3, y = 250, label = "Peromyscus") + 
+    annotate("text", x = 4, y = 250, label = "Perognathus") +
+    annotate("text", x = 5, y = 250, label = "Reithrodontomys") + 
+    annotate("text", x = 6, y = 250, label = "Sigmodon") +
+    annotate("text", x = 7, y = 250, label = "Onychomys") + 
+    annotate("text", x = 8, y = 250, label = "Peromyscus") +
+    annotate("text", x = 9, y = 250, label = "Reithrodontomys") +
+    annotate("text", x = 10, y = 250, label = "Dipodomys") + 
+    annotate("text", x = 11, y = 250, label = "Dipodomys") +
+    annotate("text", x = 12, y = 250, label = "Chaetodipus") + 
+    annotate("text", x = 13, y = 250, label = "Dipodomys") +
+    annotate("text", x = 14, y = 250, label = "Onychomys")
 
-ca_childcare_clean |>
-  filter(study_year %in% c(2008, 2018))
-  group_by(region, study_year) |>
-  summarise(median_income = median(mhi_2018, na.rm = TRUE), .groups = 'drop') |>
-  pivot_wider(id_cols = region,
-              names_from = study_year, 
-              values_from = median_income, 
-              names_prefix = "Medium Income ") |>
-  arrange(`Income 2018`)
+# FIXED from first midterm check in
+# Made it more efficient using map2!
+
+# https://chatgpt.com/share/674eb08f-bd5c-8006-8b97-c61b5ae788cd
+
+labels <- c("Neotoma", "Chaetodipus", "Peromyscus", "Perognathus", 
+            "Reithrodontomys", "Sigmodon", "Onychomys", "Peromyscus", 
+            "Reithrodontomys", "Dipodomys", "Dipodomys", "Chaetodipus", 
+            "Dipodomys", "Onychomys")
+
+x_positions <- 1:14  
+
+ggplot(data = surveys, 
+       mapping = aes(x = species, y = weight, color = genus)) + 
+  geom_boxplot() +
+  labs(
+    x = "",
+    subtitle = "Species",
+    y = "Weight (grams)",
+    title = "Analyzing Weight Distributions Across Various Rodents") +
+  coord_flip() +
+  theme(legend.position = "none") + 
+  scale_color_manual(values = cdPalette_grey) + 
+  map2(x_positions, labels, ~ annotate("text", x = .x, y = 250, label = .y)) 
 
 ```
 
@@ -709,48 +780,20 @@ ggplot(data = surveys,
 ```{r}
 #| label: dvs-2-cat
 
-# Lab 4, Question 6
+# Challenge 3, Question 2
 
-# Growing comments: Nice work changing the size of the x-axis and y-axis text! 
-# Can you make this change to other aspects of the plot? 
-# The legend is really large! Great job reordering the legend to go in the same 
-# order as the lines! The final step is to match the colors and theme I used. 
-# Personally, I like theme_bw() and the “Accent” palette from the RColorBrewer package.
-
-# I changed the size of my legend to be smaller, as it was massive before. 
-# This makes the graph more pleasing to look at. Lastly, I added the theme 
-# theme_bw() and modified the colors. Rather than using the defaults, 
-# it is important to explore different colors and themes that can make a 
-# graph more appealing!
-
-ggplot(data = ca_childcare_long, aes(x = study_year, y = price, 
-  color = fct_reorder2(.f = region, .x = study_year, .y = price))) +
-  geom_smooth(method = "loess", linewidth = 0.5) +  
-  geom_point(size = 0.8, alpha = 0.5) + 
-  # creates seperate graphs for age_groups
-  # each has its own x-axis
-  # in one row 
-  facet_wrap(~ age, scales = "free_x", nrow=1) +  
-  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
-       x = "Study Year",
-       y = "",
-       color = "California Region") +
-  # adjust axis
-  scale_y_continuous(limits = c(100, 500), breaks = seq(100, 500, by = 100)) +
-  scale_x_continuous(breaks = seq(2008, 2018, by = 2)) +
-  theme_bw() +
-  theme(
-    # spaces the graphs apart, lines is a unit
-    panel.spacing = unit(1, "lines"), 
-    # change the aspect ratio to make it less tall
-    aspect.ratio = 1, # make it less tall
-    axis.text.x = element_text(size = 7), 
-    axis.text.y = element_text(size = 7), 
-    legend.title = element_text(size = 10), 
-    legend.text = element_text(size = 8), 
-    legend.key.size = unit(0.8, "lines")
-  ) +
-  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10))
+ ggplot(data = teacher_evals_compare, 
+       aes(x = sen_level, fill = SET_level)) +
+  geom_bar(stat = "count", position = "stack") + 
+  scale_fill_manual(values = c("standard" = "orange3", "excellent" = "steelblue")) +
+  labs(
+    title = "Evaluation of In-Class Activity Use by Instructor Seniority", 
+    x = "Seniority of Instructor", 
+    y = "", 
+    subtitle = "Number of Sections", 
+    fill = "SET Level"
+  ) + 
+  theme_minimal() 
 
 ```
 
@@ -1586,6 +1629,24 @@ ca_childcare_clean |>
 
 ```{r}
 #| label: dsm-1-1
+
+# Lab 9, Question 1
+
+# Success comment: I love your function checks! I'm a bit confused about this 
+# one --nBabies == floor(nBabies)? What is the purpose of this check?
+# I was making sure that the value was a positive whole number!
+
+#| label: function-simulation-for-random-babies
+#| message: false
+#| warning: false
+#| echo: true
+
+randomBabies <- function(nBabies = 4){
+  stopifnot(is.numeric(nBabies), nBabies > 0, nBabies == floor(nBabies))
+  
+  assigned <- sample(1:nBabies, size = nBabies, replace = FALSE)
+  sum(assigned == 1:nBabies)
+}
 
 ```
 

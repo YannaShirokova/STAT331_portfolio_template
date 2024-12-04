@@ -6,16 +6,22 @@ editor: visual
 
 **Answer each of the following questions with *one sentence* including a brief explanation.**
 
-1. Finish the sentence with another student’s name: "If [Name of Student] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
+1.  Finish the sentence with another student’s name: "If \[Name of Student\] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
+
+If Sydney doesn’t earn an A, then nobody should, because she always comes to class, asks questions, and works hard to learn the material/ complete the labs accurately. 
+
+2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
+
+As a computer science student, I have adapted to using languages like Python/ C, so the hardest part of the class for me was using map() instead of for loops, for example, and learning to work with vectors/ data frames in functions.
+
+3.  What was the easiest part of the class for you? Explain why.
+
+As I mentioned, as I am a computer science student, naturally the easiest part for me was understanding the flow of the code, debugging the code, adapting to using a new IDE, and using github!
+
+4.  What part of the class surprised or interested you the most? Explain why.
+
+The part of the class that surprised me the most is that you can create such visually pleasing html documents using R and it's not that hard, I can see using this tool in the future for other projects (which I wasn't expecting)!
+
+5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
 
 
-2. What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
-
-
-3. What was the easiest part of the class for you? Explain why.
-
-
-4. What part of the class surprised or interested you the most? Explain why.
-
-
-5. Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
