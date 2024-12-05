@@ -654,11 +654,6 @@ ggplot(data = surveys,
 # one --nBabies == floor(nBabies)? What is the purpose of this check?
 # I was making sure that the value was a positive whole number!
 
-#| label: function-simulation-for-random-babies
-#| message: false
-#| warning: false
-#| echo: true
-
 randomBabies <- function(nBabies = 4){
   stopifnot(is.numeric(nBabies), nBabies > 0, nBabies == floor(nBabies))
   
@@ -762,11 +757,6 @@ ggplot(data = surveys,
 
 # Fix after midterm: got rid of nesting in colorRamp
 
-#| label: recreate-plot
-#| echo: true
-#| warning: false
-#| message: false
-
 base_palette <- brewer.pal(8, "Accent")
 color_palette <- colorRampPalette(base_palette)(10)
 
@@ -845,11 +835,6 @@ ggplot(data = surveys,
 
 # Fix after midterm: got rid of nesting in colorRamp
 
-#| label: recreate-plot
-#| echo: true
-#| warning: false
-#| message: false
-
 base_palette <- brewer.pal(8, "Accent")
 color_palette <- colorRampPalette(base_palette)(10)
 
@@ -904,11 +889,6 @@ ggplot(data = ca_childcare_long, aes(x = study_year, y = price,
 # graph more appealing!
 
 # Fix after midterm: got rid of nesting in colorRamp
-
-#| label: recreate-plot
-#| echo: true
-#| warning: false
-#| message: false
 
 base_palette <- brewer.pal(8, "Accent")
 color_palette <- colorRampPalette(base_palette)(10)
@@ -966,11 +946,6 @@ ggplot(data = ca_childcare_long, aes(x = study_year, y = price,
 # graph more appealing!
 
 # Fix after midterm: got rid of nesting in colorRamp
-
-#| label: recreate-plot
-#| echo: true
-#| warning: false
-#| message: false
 
 base_palette <- brewer.pal(8, "Accent")
 color_palette <- colorRampPalette(base_palette)(10)
@@ -1595,11 +1570,6 @@ ca_childcare_clean |>
 # Success comment: I love your function checks! I'm a bit confused about this 
 # one --nBabies == floor(nBabies)? What is the purpose of this check?
 # I was making sure that the value was a positive whole number!
-
-#| label: function-simulation-for-random-babies
-#| message: false
-#| warning: false
-#| echo: true
 
 randomBabies <- function(nBabies = 4){
   stopifnot(is.numeric(nBabies), nBabies > 0, nBabies == floor(nBabies))
