@@ -737,7 +737,7 @@ ggplot(data = surveys,
 
  ggplot(data = teacher_evals_compare, 
        aes(x = sen_level, fill = SET_level)) +
-  geom_bar(stat = "count", position = "stack") + 
+  geom_bar() + 
   scale_fill_manual(values = c("standard" = "orange3", "excellent" = "steelblue")) +
   labs(
     title = "Evaluation of In-Class Activity Use by Instructor Seniority", 
