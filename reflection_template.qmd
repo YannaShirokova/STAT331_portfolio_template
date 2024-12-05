@@ -150,22 +150,6 @@ person |>
 
 # Lab 5
 
-# Success Comment: Technically, the date variable was read in as an integer. 
-# Could you convert it into a date-time variable? This would give you the 
-# opportunity to demonstrate your ability to work with date variables 
-# (e.g., WD-3 & WD-4).
-
-# Before I was comparing a string for the date, but I converted it to a date
-# using the lubridate package!
-
-crime_scene_report |>
-  mutate(date = ymd(date)) |>
-  filter(city == "SQL City", 
-         type == "murder", 
-         date == ymd(20180115)) |>
-  select(description)
-
-# After Midterm
 # Chose an example where I extract the month and year using lubridate!
 # I changed my code so I use month(), year(), and ymd() instead of 
 # filter(str_starts(as.character(date), "2017")
@@ -201,7 +185,7 @@ drivers_license |>
 
 # Challenge 3, Question 1
 
-# I use to compare the question_no to just 903, 
+# Originally I compared the question_no to just 903, 
 # but here I just subtracted 900 so I can just compare question_no to 3
 
 teacher_evals_compare = teacher_data |> 
@@ -221,23 +205,12 @@ teacher_evals_compare = teacher_data |>
 
 # lab 5
 
-# Changed from midterm, last time I used the example we were provided 
-# from chatgpt
-# This is now my own example! 
-
 # Clues: 
 # The membership number on the bag started with "48Z"
 # I was working out last week on January the 9th
 
-# Originally I had
-membership_ids <- get_fit_now_check_in |>
-  filter(str_detect(membership_id, "^48Z"),
-         ymd(check_in_date) == ymd("2018-01-09")) |>
-  select(membership_id)
-membership_ids
-
 # I mutated the check_in_date to include dashes so I could compare the date 
-# simply using "2018-01-09"
+# by simply using "2018-01-09"
 membership_ids <- get_fit_now_check_in |>
   mutate(
     check_in_date = str_replace_all(check_in_date, 
@@ -288,22 +261,6 @@ ca_childcare_long <- ca_childcare_clean |>
 
 # Lab 5
 
-# Success Comment: Technically, the date variable was read in as an integer. 
-# Could you convert it into a date-time variable? This would give you the 
-# opportunity to demonstrate your ability to work with date variables 
-# (e.g., WD-3 & WD-4).
-
-# Before I was comparing a string for the date, but I converted it to a date
-# using the lubridate package!
-
-crime_scene_report |>
-  mutate(date = ymd(date)) |>
-  filter(city == "SQL City", 
-         type == "murder", 
-         date == ymd(20180115)) |>
-  select(description)
-
-# After Midterm
 # Chose an example where I extract the month and year using lubridate!
 # I changed my code so I use month(), year(), and ymd() instead of 
 # filter(str_starts(as.character(date), "2017")
@@ -441,13 +398,7 @@ person |>
 # The membership number on the bag started with "48Z"
 # I was working out last week on January the 9th
 
-# Originally I had
-membership_ids <- get_fit_now_check_in |>
-  filter(str_detect(membership_id, "^48Z"),
-         ymd(check_in_date) == ymd("2018-01-09")) |>
-  select(membership_id)
-
-# I changed it to include antijoin!
+# Changed from original code attempt to include antijoin
 
 # rows that don't match the clues
 excluded_members <- get_fit_now_check_in |>
@@ -474,9 +425,6 @@ membership_ids <- get_fit_now_check_in |>
 # Success comment: Fun fact! The select() column can be used to rename and 
 # change the order of columns, all in **one** function!
 # Fixed!
-
-# Used a different example from what I had originally for the midterm for a 
-# better example
 
 evals |>
   select(teacher_id, academic_degree, seniority, sex) |>
@@ -675,9 +623,9 @@ clean_measurements <- function(vec, min_value, max_value) {
 #| label: r-3-example
 
 # Challenge 2, Hot
-# Originally I didn't do this challenge, I added it now for the portfolio!
+# Originally I didn't do this challenge, I added it now for the portfolio
 
-# FIXED from first midterm check in
+# Fixed from first midterm check in
 # Made it more efficient using map2!
 # Before I was repeating annotate()
 
@@ -787,7 +735,6 @@ ggplot(data = surveys,
 #| label: dvs-2-cat
 
 # Challenge 3, Question 2
-# Fixed from midterm
 
  ggplot(data = teacher_evals_compare, 
        aes(x = sen_level, fill = SET_level)) +
@@ -1075,7 +1022,7 @@ ggplot(data = ca_childcare_long, aes(x = study_year, y = price,
 #| label: dvs-3-2
 
 # Challenge 2, Hot
-# Originally I didn't do this challenge, I added it now for the portfolio!
+# Originally I didn't do this challenge, I added it now for the portfolio
 
 # Fixed from first midterm check in
 # Made it more efficient using map2 instead of repeating annotate()!
@@ -1188,7 +1135,6 @@ teacher_evals_clean |>
 # Lab 5 
 
 # Growing comment: You need to interview every suspect!
-
 # Added the rest of the lab!
 
 drivers_license |>
@@ -1226,13 +1172,7 @@ drivers_license |>
 # difficult for people to understand what your code is doing. Having two 
 # lines is not less efficient and is more readable.
 
-# before:
-teacher_evals_clean |>
-  group_by(teacher_id, course_id) |>
-  filter(n_distinct(question_no) == 9) |>
-  summarize()
-
-# after:
+# fixed
 teacher_evals_clean |>
   group_by(teacher_id, course_id) |>
   summarize(num_questions = n_distinct(question_no)) |>
@@ -1372,7 +1312,6 @@ evals |>
 # Lab 5 
 
 # Growing comment: You need to interview every suspect!
-
 # Added the rest of the lab!
 
 drivers_license |>
