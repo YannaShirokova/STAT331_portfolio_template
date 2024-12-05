@@ -1725,7 +1725,7 @@ chisq.test(teacher_evals_compare$SET_level,
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
-Throughout the course, I have revised all my growing areas and have been working hard to look at the success comments as well to incorporate into newer assignments. I wrote code comments in every chunk were I revised code to state what I changed and reflect on how the new code is better ensuring to focus on the "bigger picture." This was sometimes challenging as most of my growing areas were small fixes, but I still made sure to reflect. Overall, fixing all my growing areas and reflecting on them was very valuable because it helped me remember to incorporate those changes into the following labs. In my portfolio, I revised code chunks to reflect the changes growing and success comments suggested.
+Throughout the course, I have revised all my growing areas and have been working hard to look at the success comments as well to incorporate into newer assignments. I wrote code comments in every chunk were I revised code to state what I changed and reflect on how the new code is better ensuring to focus on the "bigger picture." This was sometimes challenging as most of my growing areas were small fixes, but I still made sure to reflect. Overall, fixing all my growing areas and reflecting on them was very valuable because it helped me remember to incorporate those changes into the following labs. In my portfolio, I revised eevrey code chunk that had success or growing comments to reflect suggestions made.
 
 <!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
 
@@ -1741,7 +1741,7 @@ To extend my thinking, I try to think of what code functions might be most helpf
 
 Here is my peer review from lab 3. I particularly like this one, even though I have done a peer review every week. For this review, I talked about specific questions and gave advice on how the code can be made better. I made sure to comment what was good about the code too!
 
-"Hey! Good job on adding a table of contents and code folding options. This makes your overall lab have a cleaner look and easier to follow.
+Hey! Good job on adding a table of contents and code folding options. This makes your overall lab have a cleaner look and easier to follow.
 
 In question 7, you add some extra spacing and indenting that is unnecessary and makes the code look a little messy. Also, you can be more specific when using if_any(). For example, try adding named arguments and correct function syntax. if_any(.cols = everything(), .fns = \~ is.na(.x)).
 
