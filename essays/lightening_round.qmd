@@ -8,20 +8,23 @@ editor: visual
 
 1.  Finish the sentence with another student’s name: "If \[Name of Student\] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
 
-If Sydney doesn’t earn an A, then nobody should, because she always comes to class, asks questions, and works hard to learn the material/ complete the labs accurately. 
+If Sydney doesn’t earn an A, then nobody should, because she always comes to class, asks questions, genuinely tries to learn the material, and works hard to complete the labs efficiently.
 
 2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
 
-As a computer science student, I have adapted to using languages like Python/ C, so the hardest part of the class for me was using map() instead of for loops, for example, and learning to work with vectors/ data frames in functions.
+As a computer science student, I have adapted to using languages like Python/ C, so the hardest part of the class for me was using map() instead of for loops, for example, and learning to work with vectors/ data frames in functions. R is not like any coding language I have ever worked with before so I had to readjust my thinking a little bit!
 
 3.  What was the easiest part of the class for you? Explain why.
 
-As I mentioned, as I am a computer science student, naturally the easiest part for me was understanding the flow of the code, debugging the code, adapting to using a new IDE, and using github!
+As I mentioned, as I am a computer science student, naturally the easiest part for me was understanding the flow of the code, debugging the code, adapting to using a new IDE, and using github (the computer/ software aspect of this class felt familiar for me)! 
 
 4.  What part of the class surprised or interested you the most? Explain why.
 
-The part of the class that surprised me the most is that you can create such visually pleasing html documents using R and it's not that hard, I can see using this tool in the future for other projects (which I wasn't expecting)!
+The part of the class that surprised me the most is that you can create such visually pleasing html documents using R and it's not that hard! I can see myself using this tool in the future for other projects/ classes (which I wasn't expecting).
 
 5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+
+I would say to take advantage of the work time in class as you can get any questions answered about the labs you may have, it is truly a great time to get extra guidance (Allison Theobold is genuinely very helpful during this time -- or over discord too if you run out of class time/ have a question later). As long as you are willing to learn, you will succeed! 
+
 
 

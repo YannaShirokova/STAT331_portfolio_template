@@ -16,6 +16,29 @@ As we’ve said in the class efficiency is a pivotal component of statistical co
 
 -   Where did you encounter efficiency, and what were some [“a-ha” moments](https://www.merriam-webster.com/dictionary/aha%20moment) you had about efficiency? (For the latter, tie each a-ha moment to an artifact in the portfolio.)
 
+Efficiency means writing code that is accurate and holds high quality. This might look like choosing the most useful tools to solve problems and not repeating code. By doing so, not only will the code be easier to read and debug, but also it will save time and resources, improving productivity. In data science, this is important because large-scale tasks will be able to execute without slowing down performance. 
+
+I experienced several "a-ha" moments this quarter, with Lab 8 being a prime example. We used functions from the map() family to improve code from earlier labs, making it more concise, readable, and memory-efficient. In addition, in my R-3 reflection, I initially repeated code, particularly with the annotate() function, but by switching to map2(), I was able to add all the labels to my graph in one step. This change made the code simpler, less repetitive, and more flexible. For example, I could now easily update the labels without modifying the ggplot code if I wanted to. This is especially useful when working with large datasets!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
