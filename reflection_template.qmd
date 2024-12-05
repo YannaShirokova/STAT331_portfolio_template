@@ -505,11 +505,6 @@ I've done this in the following provided assignments: Lab 4, Lab 5, Lab 8, Lab 9
 
 # Fix after midterm: got rid of nesting in colorRamp
 
-#| label: recreate-plot
-#| echo: true
-#| warning: false
-#| message: false
-
 base_palette <- brewer.pal(8, "Accent")
 color_palette <- colorRampPalette(base_palette)(10)
 
@@ -561,11 +556,6 @@ ggplot(data = ca_childcare_long, aes(x = study_year, y = price,
 # I am using the updated appropriate function.
 
 # After midterm: got rid of function nesting with relevel()
-
-#| label: recreate-plot
-#| echo: true
-#| warning: false
-#| message: false
 
 ca_childcare_long <- ca_childcare_clean |>
   select(study_year, region, mc_infant, mc_toddler, mc_preschool) |>
