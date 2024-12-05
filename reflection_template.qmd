@@ -261,9 +261,9 @@ ca_childcare_long <- ca_childcare_clean |>
 
 # Lab 5
 
-# Chose an example where I extract the month and year using lubridate!
 # I changed my code so I use month(), year(), and ymd() instead of 
 # filter(str_starts(as.character(date), "2017")
+# Here I mutated date, so I could then use year() and month() to filter
 
 drivers_license |>
   rename(license_id = id) |>
