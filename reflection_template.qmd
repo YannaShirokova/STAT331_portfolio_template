@@ -504,6 +504,11 @@ I've done this in the following provided assignments: Lab 4, Lab 5, Lab 8, Lab 9
 
 # Fix after midterm: got rid of nesting in colorRamp
 
+#| label: recreate-plot
+#| echo: true
+#| warning: false
+#| message: false
+
 base_palette <- brewer.pal(8, "Accent")
 color_palette <- colorRampPalette(base_palette)(10)
 
@@ -556,6 +561,11 @@ ggplot(data = ca_childcare_long, aes(x = study_year, y = price,
 
 # After midterm: got rid of function nesting with relevel()
 
+#| label: recreate-plot
+#| echo: true
+#| warning: false
+#| message: false
+
 ca_childcare_long <- ca_childcare_clean |>
   select(study_year, region, mc_infant, mc_toddler, mc_preschool) |>
   # Transform wide to long format
@@ -587,6 +597,11 @@ ca_childcare_long <- ca_childcare_clean |>
 # more clear. I also added the stopifnot() to check that my input types are
 # of the type I expect them to be. This is really important because if I get 
 # passed the wrong types, my function would not work as expected/ error.  
+
+#| label: function-to-change-impossible-measurements-to-NA
+#| echo: true
+#| warning: false
+#| message: false
 
 clean_measurements <- function(vec, min_value, max_value) {
   stopifnot(is.numeric(vec), 
