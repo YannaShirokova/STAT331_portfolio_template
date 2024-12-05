@@ -348,20 +348,19 @@ drivers_license |>
     hair_color == "red",            
     height >= 65 & height <= 67,                  
     car_make == "Tesla",           
-    car_model == "Model S"          
-  ) |>
+    car_model == "Model S") |>
   left_join(person, by = "license_id") |>
   inner_join(facebook_event_checkin, by = c("id" = "person_id")) |>
-  # since date is a double, change to character first
-  filter(str_starts(as.character(date), "2017"),
+  mutate(date = ymd(date)) |>
+  filter(year(date) == 2017, month(date) == 12,
          event_name == "SQL Symphony Concert") |>
   group_by(id) |>
   summarise(event_count = n(), .groups = "drop") |>
   filter(event_count == 3) |>
   inner_join(person, by = "id") |>
   left_join(interview, by = c("id" = "person_id")) |>
-  # Confirm new suspect = shouldn't have an interview 
   select(name, transcript)
+
 
 ```
 
@@ -1109,20 +1108,19 @@ drivers_license |>
     hair_color == "red",            
     height >= 65 & height <= 67,                  
     car_make == "Tesla",           
-    car_model == "Model S"          
-  ) |>
+    car_model == "Model S") |>
   left_join(person, by = "license_id") |>
   inner_join(facebook_event_checkin, by = c("id" = "person_id")) |>
-  # since date is a double, change to character first
-  filter(str_starts(as.character(date), "2017"),
+  mutate(date = ymd(date)) |>
+  filter(year(date) == 2017, month(date) == 12,
          event_name == "SQL Symphony Concert") |>
   group_by(id) |>
   summarise(event_count = n(), .groups = "drop") |>
   filter(event_count == 3) |>
   inner_join(person, by = "id") |>
   left_join(interview, by = c("id" = "person_id")) |>
-  # Confirm new suspect = shouldn't have an interview 
   select(name, transcript)
+
 
 ```
 
@@ -1289,16 +1287,16 @@ drivers_license |>
     car_model == "Model S") |>
   left_join(person, by = "license_id") |>
   inner_join(facebook_event_checkin, by = c("id" = "person_id")) |>
-  # since date is a double, change to character first
-  filter(str_starts(as.character(date), "2017"),
+  mutate(date = ymd(date)) |>
+  filter(year(date) == 2017, month(date) == 12,
          event_name == "SQL Symphony Concert") |>
   group_by(id) |>
   summarise(event_count = n(), .groups = "drop") |>
   filter(event_count == 3) |>
   inner_join(person, by = "id") |>
   left_join(interview, by = c("id" = "person_id")) |>
-  # Confirm new suspect = shouldn't have an interview 
   select(name, transcript)
+
 
 ```
 
